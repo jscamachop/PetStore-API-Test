@@ -153,4 +153,27 @@ public class PetStoreTests {
                 .body("id", equalTo(orderIdTest)) // Validamos que nos devuelva el ID correcto
                 .body("status", equalTo("placed")); // Validamos el estado de la orden
     }
+
+    @Test
+    public void test06_logoutUser() {
+        // 1. Iniciamos sesión rápidamente para tener algo que cerrar
+        given()
+                .queryParam("username", testUsername)
+                .queryParam("password", testPassword)
+                .when()
+                .get("/user/login")
+                .then()
+                .statusCode(200);
+
+        // 2. Consumimos el endpoint de logout
+        given()
+                .when()
+                .get("/user/logout")
+                .then()
+                .log().all() // Imprimimos la respuesta en consola
+                .statusCode(200) // Validamos que el código HTTP sea 200 (OK)
+                .body("code", equalTo(200))
+                .body("type", equalTo("unknown"))
+                .body("message", equalTo("ok")); // La API confirma el logout con el mensaje "ok"
+    }
 }
