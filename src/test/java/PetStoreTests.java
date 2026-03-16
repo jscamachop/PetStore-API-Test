@@ -125,4 +125,32 @@ public class PetStoreTests {
                 .body("id", equalTo(petIdTest)) // Validamos que el ID coincida
                 .body("name", equalTo("Firulais_PerfDog")); // Validamos que el nombre coincida
     }
+
+    @Test
+    public void test05_createOrder() {
+        // 1. Preparamos los datos de nuestra orden de compra
+        int orderIdTest = 55667788;
+        int petIdTest = 987654321; // ID de la mascota que queremos "comprar"
+
+        String orderBody = "{\n" +
+                "  \"id\": " + orderIdTest + ",\n" +
+                "  \"petId\": " + petIdTest + ",\n" +
+                "  \"quantity\": 1,\n" +
+                "  \"shipDate\": \"2026-03-13T19:00:00.000Z\",\n" +
+                "  \"status\": \"placed\",\n" +
+                "  \"complete\": true\n" +
+                "}";
+
+        // 2. Ejecutamos la petición POST para crear la orden
+        given()
+                .contentType(ContentType.JSON)
+                .body(orderBody)
+                .when()
+                .post("/store/order")
+                .then()
+                .log().all() // Imprimimos la respuesta
+                .statusCode(200) // Validamos que la orden se cree con éxito
+                .body("id", equalTo(orderIdTest)) // Validamos que nos devuelva el ID correcto
+                .body("status", equalTo("placed")); // Validamos el estado de la orden
+    }
 }
