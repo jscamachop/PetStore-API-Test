@@ -94,4 +94,35 @@ public class PetStoreTests {
                 // Validamos que el estado de la primera mascota en la lista sea realmente "available"
                 .body("[0].status", equalTo("available"));
     }
+
+    @Test
+    public void test04_getPetById() {
+        int petIdTest = 987654321;
+
+        String petBody = "{\n" +
+                "  \"id\": " + petIdTest + ",\n" +
+                "  \"name\": \"Firulais_PerfDog\",\n" +
+                "  \"status\": \"available\"\n" +
+                "}";
+
+        // Creamos la mascota temporalmente
+        given()
+                .contentType(ContentType.JSON)
+                .body(petBody)
+                .when()
+                .post("/pet") // Endpoint para crear mascotas
+                .then()
+                .statusCode(200);
+
+        given()
+                // Usamos pathParam para inyectar el ID directamente en la URL
+                .pathParam("petId", petIdTest)
+                .when()
+                .get("/pet/{petId}") // Rest Assured reemplazará {petId} con 987654321
+                .then()
+                .log().all() // Imprimimos la respuesta
+                .statusCode(200) // Validamos que la encuentre
+                .body("id", equalTo(petIdTest)) // Validamos que el ID coincida
+                .body("name", equalTo("Firulais_PerfDog")); // Validamos que el nombre coincida
+    }
 }
