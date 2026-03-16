@@ -47,4 +47,37 @@ public class PetStoreTests {
                 .body("type", equalTo("unknown"))
                 .body("message", notNullValue()); // Validamos que nos devuelva un ID de mensaje
     }
+
+    @Test
+    public void test02_loginUser() {
+        // 1. Creamos el cuerpo del usuario
+        String requestBody = "{\n" +
+                "  \"id\": 0,\n" +
+                "  \"username\": \"" + testUsername + "\",\n" +
+                "  \"password\": \"" + testPassword + "\"\n" +
+                "}";
+
+        // 2. Registramos al usuario en la API (igual que en el test 1, pero sin tantas validaciones)
+        given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post("/user")
+                .then()
+                .statusCode(200);
+
+
+        // 3. Ejecutamos el Login
+        given()
+                .queryParam("username", testUsername)
+                .queryParam("password", testPassword)
+                .when()
+                .get("/user/login")
+                .then()
+                .log().all() // Imprimimos la respuesta
+                .statusCode(200) // Validamos que el login sea exitoso
+                .body("code", equalTo(200))
+                .body("type", equalTo("unknown"))
+                .body("message", notNullValue()); // El mensaje suele traer el token/sesión de inicio
+    }
 }
