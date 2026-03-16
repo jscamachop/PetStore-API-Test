@@ -80,4 +80,18 @@ public class PetStoreTests {
                 .body("type", equalTo("unknown"))
                 .body("message", notNullValue()); // El mensaje suele traer el token/sesión de inicio
     }
+
+    @Test
+    public void test03_findAvailablePets() {
+        given()
+                // Pasamos el parámetro ?status=available en la URL
+                .queryParam("status", "available")
+                .when()
+                .get("/pet/findByStatus")
+                .then()
+                .log().all() // Imprimimos la respuesta en consola
+                .statusCode(200) // Validamos que la petición sea exitosa
+                // Validamos que el estado de la primera mascota en la lista sea realmente "available"
+                .body("[0].status", equalTo("available"));
+    }
 }
